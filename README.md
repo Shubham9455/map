@@ -1,16 +1,8 @@
 # map
 
-A new Flutter project.
+A Very Simple Flutter App Which Integrates Map Feature
 
-## Getting Started
+- It can Automatically Detect User's Location And,
+- Also Have Search Feature
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![APK LINK](https://github.com/Shubham9455/map/blob/master/app-release.apk)
