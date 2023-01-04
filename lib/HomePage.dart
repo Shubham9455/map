@@ -13,6 +13,7 @@ import 'package:geocoder/geocoder.dart';
 import 'package:flutter/services.dart';
 import 'Saved Location/SavedLocation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -23,6 +24,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final prefs = SharedPreferences.getInstance();
+  var _zoom = 9.0;
   List<String> _savedLat = [];
   List<String> _savedLong = [];
   List<String> _savedAddress = [];
@@ -58,11 +60,11 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
-  _toggleLoding() {
+  _toggleLoding({t= 2000}) {
     setState(() {
       _loading = true;
     });
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(Duration(milliseconds: t), () {
       setState(() {
         _loading = false;
       });
@@ -82,6 +84,10 @@ class _HomePageState extends State<HomePage> {
     prefs.then((value) => {value.setStringList('saved_longs', _savedLong)});
     prefs
         .then((value) => {value.setStringList('saved_address', _savedAddress)});
+    Fluttertoast.showToast(
+        msg: "Location Saved",
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.green[300]);
   }
 
   getSavedLocations() {
@@ -127,6 +133,7 @@ class _HomePageState extends State<HomePage> {
                   leading: const Icon(Icons.save),
                   title: const Text('Save Current Location'),
                   onTap: () {
+                    Navigator.pop(context);
                     addSavedLocation();
                     debugPrint("save current location");
                     debugPrint(latitude.toString());
@@ -139,12 +146,46 @@ class _HomePageState extends State<HomePage> {
           })
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _toggleLoding();
-          _getLocation();
-        },
-        child: const Icon(Icons.location_searching),
+      floatingActionButton: SizedBox(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              backgroundColor: _zoom < 18 ? Colors.green : Colors.grey,
+              mini: true,
+              onPressed: () {
+                setState(() {
+                  if(_zoom<18)
+                  _zoom += 1;
+                });
+                _toggleLoding(t: 100);
+              },
+              
+              child: const Icon(Icons.zoom_in),
+            ),
+            FloatingActionButton(
+              backgroundColor: _zoom > 0 ? Colors.green : Colors.grey,
+              mini: true,
+              onPressed: () {
+
+                setState(() {
+                  if (_zoom > 0) {
+                    _zoom -= 1;
+                  }
+                });
+                _toggleLoding(t:100);
+              },
+              child: const Icon(Icons.zoom_out),
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                _toggleLoding();
+                _getLocation();
+              },
+              child: const Icon(Icons.location_searching),
+            ),
+          ],
+        ),
       ),
       body: _loading
           ? Container(
@@ -205,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                       child: FlutterMap(
                     options: MapOptions(
                       center: LatLng(latitude, longitude),
-                      zoom: 9.2,
+                      zoom: _zoom,
                       onPositionChanged: (position, hasGesture) {
                         if (hasGesture) {
                           setState(() {
