@@ -45,6 +45,7 @@ dependencies:
   velocity_x: ^0.4.1
   sqflite: ^2.2.2
   localstorage: ^4.0.0+1
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:
